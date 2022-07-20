@@ -18,6 +18,11 @@ export const authenticateUser = asyncHandler(async (req, res, next) => {
         throw new Error("Session expired, Login again")
     }
 
+    if(isAuthenticated.role != 'user') {
+        res.statusCode = 403;
+        throw new Error("Unauthorized")
+    }
+
     req.user = isAuthenticated;
     next();
 });
