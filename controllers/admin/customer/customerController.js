@@ -14,7 +14,7 @@ export const getCustomer = asyncHandler(async (req, res) => {
     }
 
     if(bankId) {
-        const customer = await Customer.findOne({bankId: ObjectId(bankId)});
+        const customer = await Customer.find({bankId: ObjectId(bankId)});
         return res.status(200).json(customer);
     }
 
