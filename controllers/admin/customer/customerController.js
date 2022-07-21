@@ -6,11 +6,18 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export const getCustomer = asyncHandler(async (req, res) => {
     const id = req.query.id;
+    const bankId = req.query.bankId;
 
     if(id) {
         const customer = await Customer.findOne({_id: ObjectId(id)});
-        res.status(200).json(customer);
+        return res.status(200).json(customer);
     }
+
+    if(bankId) {
+        const customer = await Customer.findOne({bankId: ObjectId(bankId)});
+        return res.status(200).json(customer);
+    }
+
     const customer = await Customer.aggregate([]);
     res.status(200).json(customer);
 })
