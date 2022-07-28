@@ -48,7 +48,7 @@ export const deleteFile = asyncHandler(async (req, res) => {
     }
     const file = await Files.findOne({_id: ObjectId(req.body.id)});
     await Files.deleteOne({_id: ObjectId(req.body.id)})
-    if(file.filePath){
+    if(file?.filePath){
         await unlink(file.filePath);
     }
     res.status(200).json(file);

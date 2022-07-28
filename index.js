@@ -6,7 +6,11 @@ import multer from 'multer';
 import cors from 'cors';
 const upload = multer();
 import connectDb from './config/db.js';
+import path from 'path';
+import {fileURLToPath} from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+export const dirname = path.dirname(__filename);
 dotenv.config();
 connectDb();
 

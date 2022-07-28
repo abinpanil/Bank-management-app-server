@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import asyncHandler from 'express-async-handler';
 import Customer from '../../../model/customerModel.js';
 import { unlink } from 'node:fs/promises';
+import { dirname } from "../../../index.js";
+
 const ObjectId = mongoose.Types.ObjectId;
 
 export const getCustomer = asyncHandler(async (req, res) => {
@@ -14,11 +16,10 @@ export const getCustomer = asyncHandler(async (req, res) => {
     }
 
     if(bankId) {
-        const customer = await Customer.find({bankId: ObjectId(bankId)});
+        const customer = await Customer.find({bank: ObjectId(bankId)});
         return res.status(200).json(customer);
     }
-
-    const customer = await Customer.aggregate([]);
+    const customer = await Customer.find();
     res.status(200).json(customer);
 })
 
@@ -120,3 +121,37 @@ export const deleteCustomer = asyncHandler(async (req, res) => {
     })
 
 });
+
+export const deleteFile = asyncHandler(async (req, res) => {
+    const id = req.query.id;
+    if(!id) {
+        throw new Error('Id required');
+    }
+    const data = await Customer.findOne({_id:ObjectId(id)});
+    if(!data){
+        throw new Error('Id Invalid');
+    }
+    if(data?.filePath!=undefined || data?.filePath!=null){ 
+        await unlink(data.filePath);
+        await Customer.updateOne({_id:ObjectId(id)},{$set:{filepath:null}});
+    }
+    res.status(202).json({
+        status: 'success',
+        message: `deleted`,
+    })
+})
+
+export const downloadFile = asyncHandler(async(req, res) => {
+    const id = req.query.id;
+    if(!id) {
+        throw new Error('Id required');
+    }
+    const data = await Customer.findOne({_id:ObjectId(id)});
+    if(!data){
+        throw new Error('Id Invalid');
+    }
+    if(data?.filePath!=undefined || data?.filePath!=null){ 
+        const file = `${dirname}/${data.filePath}`;
+        res.download(file);
+    }
+})
