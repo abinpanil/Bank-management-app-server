@@ -69,7 +69,7 @@ export const editCustomer = asyncHandler(async (req, res) => {
         }
 
         const existCustomer = await Customer.findOne({_id: ObjectId(id)});
-        if(existCustomer.filePath != undefined && existCustomer.filePath != null){
+        if(existCustomer?.filePath != undefined && existCustomer?.filePath != null){
             await unlink(existCustomer.filePath);
         }
 
@@ -81,7 +81,7 @@ export const editCustomer = asyncHandler(async (req, res) => {
             barcode: req.body.barcode,
             amountPayable: req.body.amountPayable,
             bank: req.body.bank,
-            noticeType: req.body.noticeType,
+            noticeType: req.body.noticeType,            
         }
         if(file) {
             customerData.filePath = req.file.path;
